@@ -14,6 +14,21 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import React from "react";
 import { AiFillAmazonSquare } from "react-icons/ai";
 import { IoMdSearch } from "react-icons/io";
+import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import Button from "@mui/material/Button";
+import Snackbar from "@mui/material/Snackbar";
+import Fade from "@mui/material/Fade";
+import Slide from "@mui/material/Slide";
+import Grow from "@mui/material/Grow";
+function SlideTransition(props) {
+  return <Slide {...props} direction="up" />;
+}
+
+function GrowTransition(props) {
+  return <Grow {...props} />;
+}
 
 function Header() {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -24,17 +39,66 @@ function Header() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const [age, setAge] = React.useState("");
+
+  const handleChange = (event) => {
+    setAge(event.target.value);
+  };
+  const [state, setState] = React.useState({
+    open: false,
+    Transition: Fade,
+  });
+
+  const handleSnackbarClick = (Transition) => () => {
+    setState({
+      open: true,
+      Transition,
+    });
+  };
+
+  const handleSnackbarClose = () => {
+    setState({
+      ...state,
+      open: false,
+    });
+  };
   return (
     <div>
       <div className="header">
-        <IconButton>
+        <IconButton onClick={handleSnackbarClick(SlideTransition)}>
           <AiFillAmazonSquare />
         </IconButton>
+        <Button onClick={handleSnackbarClick(SlideTransition)}>
+          Slide Transition
+        </Button>
+        <Snackbar
+          open={state.open}
+          onClose={handleSnackbarClose}
+          TransitionComponent={state.Transition}
+          message="I love snacks"
+          key={state.Transition.name}
+          autoHideDuration={1200}
+        />
 
-        <IconButton onClick={handleClick}>
-          <IoMdSearch />
-        </IconButton>
-
+        <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+          <InputLabel id="demo-select-small-label">
+            <IconButton>
+              <IoMdSearch />
+            </IconButton>
+          </InputLabel>
+          <Select
+            labelId="demo-select-small-label"
+            id="demo-select-small"
+            value={age}
+            label="Age"
+            onChange={handleChange}
+          >
+            <MenuItem value=""></MenuItem>
+            <MenuItem value={10}>Ten</MenuItem>
+            <MenuItem value={20}>Twenty</MenuItem>
+            <MenuItem value={30}>Thirty</MenuItem>
+          </Select>
+        </FormControl>
         <Tooltip title="Account settings">
           <IconButton
             onClick={handleClick}
